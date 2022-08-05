@@ -24,13 +24,14 @@ namespace MyApp // Note: actual namespace depends on the project name.
         public delegate void Print<T>(T val);
         public delegate T Read<T>();
 
-        public static void RepeateCode(Action action, bool condition, int timesCount)
+        public static void RepeateCode(Action<string> action, bool condition, int timesCount)
         {
             int repiated = 0;
 
             while (condition && repiated < timesCount)
             {
-                action.Invoke();
+                action(repiated.ToString());
+                repiated++;
             }
         }
 
