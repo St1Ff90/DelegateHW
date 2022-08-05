@@ -22,6 +22,17 @@ namespace MyApp // Note: actual namespace depends on the project name.
         }
 
         public delegate void Print<T>(T val);
+        public delegate T Read<T>();
+
+        public static void RepeateCode(Action action, bool condition, int timesCount)
+        {
+            int repiated = 0;
+
+            while (condition && repiated < timesCount)
+            {
+                action.Invoke();
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -35,7 +46,12 @@ namespace MyApp // Note: actual namespace depends on the project name.
             var sorted = Sort(users, u => u.PhoneNumber).ToList();
             var selection = MyFilter(users, t => t.PhoneNumber == "123").ToList();
             Print<string> print = Console.WriteLine;
+            Read<string> read = Console.ReadLine;
             print("Hello world!");
+            string result = read();
+
+            RepeateCode(Console.WriteLine, true, 5);
+
         }
     }
 }
