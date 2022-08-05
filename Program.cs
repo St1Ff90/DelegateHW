@@ -5,34 +5,37 @@ namespace MyApp // Note: actual namespace depends on the project name.
 {
     internal class Program
     {
-        static void Sort(User[] users, Func<User, User, int> comparer)
+        public static IEnumerable<T> Sort<T, K>(IEnumerable<T> source, Func<T, K> keySelector)
         {
-            for (int i = 0; i < users.Length; i++)
+            var items = source.ToArray();
+            var keys = items.Select(keySelector).ToArray();
+            Array.Sort(keys, items);
+            foreach (var item in items)
             {
-                for (int j = i + 1; j < users.Length; j++)
-                {
-                    if (comparer(users[i], users[j]) > 0)
-                    {
-                        var temp = users[i];
-                        users[i] = users[j];
-                        users[j] = temp;
-                    }
-                }
+                yield return item;
             }
         }
 
+        static IEnumerable<T> MyFilter<T>(IEnumerable<T> source, Func<T, bool> filter)
+        {
+            return source.Where(filter);
+        }
+
+        public delegate void Print<T>(T val);
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
-            User[] users = new User[3]
-            {
+            IEnumerable<User> users = new User[3]
+                {
                 new User("Vasia","Pupkin", DateTime.Now, "123"),
                 new User("Kolia","Petechkin", DateTime.Now, "321"),
                 new User("Seergay","Andreyev", DateTime.Now, "222"),
-            };
+                };
 
-            Sort(users, User.CompareDateOfBirthday);
+            var sorted = Sort(users, u => u.PhoneNumber).ToList();
+            var selection = MyFilter(users, t => t.PhoneNumber == "123").ToList();
+            Print<string> print = Console.WriteLine;
+            print("Hello world!");
         }
     }
 }
