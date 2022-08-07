@@ -5,33 +5,54 @@ namespace MyApp // Note: actual namespace depends on the project name.
 {
     internal class Program
     {
-        public static IEnumerable<T> Sort<T, K>(IEnumerable<T> source, Func<T, K> keySelector)
+        public static IEnumerable<T> Sort<T>(IEnumerable<T> source, Func<T, T, int> comparer)
         {
             var items = source.ToArray();
-            var keys = items.Select(keySelector).ToArray();
-            Array.Sort(keys, items);
-            foreach (var item in items)
+
+            for (int i = 0; i < items.Length; i++)
             {
-                yield return item;
+                for (int j = i + 1; j < items.Length; j++)
+                {
+                    if (comparer(items[i], items[j]) > 0)
+                    {
+                        Swap(ref items[i], ref items[j]);
+                    }
+                }
+            }
+
+            IEnumerator<T> iEnumerator = items.Take(items.Count()).GetEnumerator();
+
+            while (iEnumerator.MoveNext())
+            {
+                yield return iEnumerator.Current;
             }
         }
 
-        static IEnumerable<T> MyFilter<T>(IEnumerable<T> source, Func<T, bool> filter)
+        static private void Swap<T>(ref T x, ref T y)
         {
-            return source.Where(filter);
+            var temp = x;
+            x = y;
+            y = temp;
         }
 
-        public delegate void Print<T>(T val);
-        public delegate T Read<T>();
+        static IEnumerable<T> Filter<T>(IEnumerable<T> source, Func<T, bool> filter)
+        {
+            foreach (var item in source)
+            {
+                if (filter(item))
+                {
+                    yield return item;
+                }
+            }
+        }
 
-        public static void RepeateCode(Action<string> action, bool condition, int timesCount)
+        public static void RepeateCode(Action action, Func<bool> condition, int timesCount)
         {
             int repiated = 0;
 
-            while (condition && repiated < timesCount)
+            while (condition() && ++repiated <= timesCount)
             {
-                action(repiated.ToString());
-                repiated++;
+                action();
             }
         }
 
@@ -44,15 +65,10 @@ namespace MyApp // Note: actual namespace depends on the project name.
                 new User("Seergay","Andreyev", DateTime.Now, "222"),
                 };
 
-            var sorted = Sort(users, u => u.PhoneNumber).ToList();
-            var selection = MyFilter(users, t => t.PhoneNumber == "123").ToList();
-            Print<string> print = Console.WriteLine;
-            Read<string> read = Console.ReadLine;
-            print("Hello world!");
-            string result = read();
-
-            RepeateCode(Console.WriteLine, true, 5);
-
+            var sorted = Sort(users, (x, y) => x.PhoneNumber.CompareTo(y.PhoneNumber)).ToList();
+            var selection = Filter(users, t => t.PhoneNumber == "123").ToList();
+            Func<bool> condition = new Func<bool>(() => true);
+            RepeateCode(Console.WriteLine, condition, 5);
         }
     }
 }
