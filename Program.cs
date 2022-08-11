@@ -46,11 +46,11 @@ namespace MyApp // Note: actual namespace depends on the project name.
             }
         }
 
-        public static void RepeateCode(Action action, Func<bool> condition, int timesCount)
+        public static void RepeatCode(Action action, Func<bool> condition, int timesCount)
         {
-            int repiated = 0;
+            int repeated = 0;
 
-            while (condition() && ++repiated <= timesCount)
+            while (condition() && ++repeated <= timesCount)
             {
                 action();
             }
@@ -68,7 +68,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
             var sorted = Sort(users, (x, y) => x.PhoneNumber.CompareTo(y.PhoneNumber)).ToList();
             var selection = Filter(users, t => t.PhoneNumber == "123").ToList();
             Func<bool> condition = new Func<bool>(() => true);
-            RepeateCode(Console.WriteLine, condition, 5);
+            RepeatCode(Console.WriteLine, condition, 5);
         }
     }
 }

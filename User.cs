@@ -9,14 +9,14 @@ namespace DelegateHW
 {
     internal class User
     {
-        public string FierstName { get; set; }
+        public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirthday { get; set; }
         public string PhoneNumber { get; set; }
 
         public User(string fierstName, string lastName, DateTime dateOfBierthday, string phoneNumber)
         {
-            FierstName = fierstName;
+            FirstName = fierstName;
             LastName = lastName;
             DateOfBirthday = dateOfBierthday;
             PhoneNumber = phoneNumber;
